@@ -3,7 +3,7 @@ from src.nodes.critic import critique_answer
 
 def correctness_evaluator(inputs: dict, outputs: dict, reference_outputs: dict) -> dict:
     """
-    Check whether generated answer overlaps with expected answer.
+    Check whether generated answer overlaps with expected answer or not.
     """
     predicted = outputs.get("answer", "").lower()
     expected = reference_outputs.get("answer", "").lower()

@@ -3,12 +3,14 @@ from contextlib import asynccontextmanager
 from typing import AsyncIterator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from src.api.routes.query import router as query_router
 
 logger = logging.getLogger(__name__)
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    """"
+    """ "
     Manage FastAPI application startup and shutdown.
     """
 
@@ -16,11 +18,12 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     yield
     logger.info("Shutting down AdaptiveRAG API application...")
 
+
 def create_app() -> FastAPI:
     """
     Create and configure the FastAPI application.
     """
-    
+
     app = FastAPI(
         title="AdaptiveRAG API",
         description="HTTP API layer for the AdaptiveRAG Agent",
@@ -28,10 +31,13 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    #add CORS middleware to allow requests from any origin
+    # add CORS middleware to allow requests from any origin
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=[
+            "http://localhost:3000",
+            "http://localhost:5173",
+        ],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -46,5 +52,7 @@ def create_app() -> FastAPI:
             "status": "ok",
             "service": "AdaptiveRAG API",
         }
-    
+
+    app.include_router(query_router)
+
     return app

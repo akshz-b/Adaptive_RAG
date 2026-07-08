@@ -4,6 +4,7 @@ from typing import AsyncIterator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.api.routes.query import router as query_router
+from src.utils.logging import setup_logging
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +24,7 @@ def create_app() -> FastAPI:
     """
     Create and configure the FastAPI application.
     """
+    setup_logging()
 
     app = FastAPI(
         title="AdaptiveRAG API",

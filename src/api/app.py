@@ -4,13 +4,14 @@ from typing import AsyncIterator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.api.routes.query import router as query_router
+from src.api.routes.ingest import router as ingest_router
 
 logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    """ "
+    """
     Manage FastAPI application startup and shutdown.
     """
 
@@ -54,5 +55,6 @@ def create_app() -> FastAPI:
         }
 
     app.include_router(query_router)
+    app.include_router(ingest_router)
 
     return app

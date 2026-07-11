@@ -1,5 +1,5 @@
 from src.retrieval.keyword import reset_bm25_index
-from src.api.routes.ingest import DOCUMENTS_DIR
+from src.api.services.ingest import DOCUMENTS_DIR
 import logging
 from collections import Counter
 

@@ -21,6 +21,8 @@ dependencies = [
     "fastapi",
     "uvicorn[standard]",
     "python-multipart",
+    "pytest",
+    "httpx",
 ]
 
 [build-system]

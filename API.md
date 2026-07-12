@@ -51,6 +51,48 @@ For production deployments, add security headers and rate limiting at the API ga
 
 ---
 
+## Health, Readiness, and Startup Warmup
+
+### Health Check
+
+`GET /health` is a lightweight liveness endpoint.
+
+It only confirms that the API process is running and does not load heavy dependencies such as the RAG graph, LLM, embeddings, reranker, BM25 index, Tavily, or Chroma vectorstore.
+
+### Readiness Check
+
+`GET /ready` checks lightweight runtime readiness.
+
+It verifies that required configuration is loaded and that the Chroma persistence path is configured and accessible.
+
+Example response:
+
+```json
+{
+  "status": "ready",
+  "checks": {
+    "config_loaded": true,
+    "chroma_path_configured": true,
+    "chroma_path_accessible": true
+  }
+}
+```
+
+If readiness checks fail, the endpoint returns `503 Service Unavailable`.
+
+### Startup Warmup
+
+Startup warmup is controlled by:
+
+```env
+API_ENABLE_STARTUP_WARMUP=false
+```
+By default, warmup is disabled so the API can start quickly and /health remains lightweight.
+
+Heavy components such as LLMs, embedding models, BM25 index, reranker, and the full RAG graph are not loaded during startup by default. They are initialized lazily when needed.
+
+---
+
 ## Endpoints
 
 ### 1. Health Check
@@ -62,13 +104,36 @@ Checks the status of the API server.
   ```json
   {
     "status": "ok",
-    "service": "AdaptiveRAG API"
+    "service": "Adaptive RAG"
   }
   ```
 
 ---
 
-### 2. Query AdaptiveRAG
+### 2. Readiness Check
+
+Checks whether lightweight runtime dependencies are ready.
+
+* **URL**: `/ready`
+* **Method**: `GET`
+* **Response**: `200 OK`
+  ```json
+  {
+    "status": "ready",
+    "checks": {
+      "config_loaded": true,
+      "chroma_path_configured": true,
+      "chroma_path_accessible": true
+    }
+  }
+  ```
+
+* **Errors**:
+  * `503 Service Unavailable`: If one or more readiness checks fail.
+
+---
+
+### 3. Query AdaptiveRAG
 Submits a query to the AdaptiveRAG agent, running it through the LangGraph decision workflow.
 
 * **URL**: `/api/v1/query`
@@ -111,7 +176,7 @@ Submits a query to the AdaptiveRAG agent, running it through the LangGraph decis
 
 ---
 
-### 3. Ingest PDF
+### 4. Ingest PDF
 Uploads and processes a PDF document, chunking it, storing the embeddings in the Chroma vector store, and updating the BM25 search index.
 
 * **URL**: `/api/v1/ingest`
@@ -144,7 +209,7 @@ Uploads and processes a PDF document, chunking it, storing the embeddings in the
 
 ---
 
-### 4. List Ingested Documents
+### 5. List Ingested Documents
 Retrieves a list of all documents currently ingested and available in the vector database.
 
 * **URL**: `/api/v1/documents`
@@ -171,7 +236,7 @@ Retrieves a list of all documents currently ingested and available in the vector
 
 ---
 
-### 5. Delete Ingested Document
+### 6. Delete Ingested Document
 Deletes an ingested document, removing all its chunks from the Chroma vector store, removing the PDF file from disk, and resetting/updating the BM25 search index.
 
 * **URL**: `/api/v1/documents/{document_id}`

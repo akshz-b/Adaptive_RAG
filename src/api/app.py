@@ -3,9 +3,12 @@ from contextlib import asynccontextmanager
 from typing import AsyncIterator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from src.api.routes.query import router as query_router
 from src.api.routes.ingest import router as ingest_router
 from src.api.routes.documents import router as document_router
+from src.api.routes.health import router as health_router
+
 from src.utils.logging_config import setup_logging
 from src.api.middleware.request_logging import LoggingMiddleware
 from src.api.middleware.error_handler import ErrorHandlingMiddleware
@@ -21,6 +24,13 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """
 
     logger.info("Starting up AdaptiveRAG API application...")
+
+    if settings.api_enable_startup_warmup:
+        logger.info("API startup warmup is enabled.")
+        # warup logic can be added later
+    else:
+        logger.info("API startup warmup is disabled.")
+
     yield
     logger.info("Shutting down AdaptiveRAG API application...")
 
@@ -50,16 +60,7 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    @app.get("/health", tags=["Health"])
-    async def health_check():
-        """
-        Health check endpoint to verify that the API is running.
-        """
-        return {
-            "status": "ok",
-            "service": "AdaptiveRAG API",
-        }
-
+    app.include_router(health_router)
     app.include_router(query_router)
     app.include_router(ingest_router)
     app.include_router(document_router)

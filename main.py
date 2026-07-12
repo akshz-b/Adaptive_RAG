@@ -2,19 +2,9 @@ import argparse
 from typing import List
 import logging
 from src.graph import rag_graph
-from pathlib import Path
+from src.utils.logging_config import setup_logging
 
-LOG_DIR = Path("logs")
-LOG_DIR.mkdir(exist_ok=True)
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler(LOG_DIR / "adaptive_rag.log", encoding="utf-8"),
-        logging.StreamHandler(),
-    ],
-)
+setup_logging()
 logger = logging.getLogger(__name__)
 
 

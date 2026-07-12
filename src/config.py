@@ -72,5 +72,9 @@ class Settings(BaseSettings):
             if origin.strip()
         ]
 
+    api_enable_startup_warmup: bool = Field(
+        default=False, alias="API_ENABLE_STARTUP_WARMUP"
+    )
+
 
 settings = Settings()

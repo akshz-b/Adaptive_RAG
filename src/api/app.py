@@ -7,7 +7,9 @@ from src.api.routes.query import router as query_router
 from src.api.routes.ingest import router as ingest_router
 from src.api.routes.documents import router as document_router
 from src.utils.logging_config import setup_logging
-from api.middleware.request_logging import LoggingMiddleware
+from src.api.middleware.request_logging import LoggingMiddleware
+from src.api.middleware.error_handler import ErrorHandlingMiddleware
+from src.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -36,15 +38,13 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
+    app.add_middleware(ErrorHandlingMiddleware)
     app.add_middleware(LoggingMiddleware)
 
     # add CORS middleware to allow requests from any origin
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[
-            "http://localhost:3000",
-            "http://localhost:5173",
-        ],
+        allow_origins=settings.api_cors_origins_list,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

@@ -10,7 +10,7 @@ from src.api.services.document import list_ingested_documents, delete_ingested_d
 logger = logging.getLogger(__name__)
 
 router = APIRouter(
-    prefix="/api/v1/documents",
+    prefix="/api/v1",
     tags=["Documents"],
 )
 
@@ -71,9 +71,9 @@ def delete_document(document_id: str) -> DeleteResponse:
         result = delete_ingested_document(document_id)
         return DeleteResponse(**result)
     except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail="Document not found") from exc
+        raise HTTPException(status_code=404, detail="Document not found.") from exc
     except Exception as exc:
         logger.exception("Failed to delete document")
         raise HTTPException(
-            status_code=500, detail="Failed to delete document"
+            status_code=500, detail="Failed to delete document."
         ) from exc

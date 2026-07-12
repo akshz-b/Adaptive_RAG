@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.api.routes.query import router as query_router
 from src.api.routes.ingest import router as ingest_router
 from src.api.routes.documents import router as document_router
-from src.utils.logging import setup_logging
+from src.utils.logging_config import setup_logging
 
 logger = logging.getLogger(__name__)
 

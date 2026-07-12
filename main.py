@@ -2,7 +2,7 @@ import argparse
 from typing import List
 import logging
 from src.graph import rag_graph
-from src.utils.logging import setup_logging
+from src.utils.logging_config import setup_logging
 
 setup_logging()
 logger = logging.getLogger(__name__)

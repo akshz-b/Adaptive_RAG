@@ -1,7 +1,8 @@
 import logging
 from pathlib import Path
 import pytest
-from src.utils.logging import setup_logging
+from src.utils.logging_config import setup_logging
+
 
 @pytest.fixture
 def temp_log_file():
@@ -13,13 +14,14 @@ def temp_log_file():
     if log_file.exists():
         log_file.unlink()
 
+
 def test_setup_logging(temp_log_file):
     # Call the central setup_logging utility using the test log file name
     setup_logging(log_filename="test_log.log")
 
     test_logger = logging.getLogger("test_logging_module")
     test_message = "Validating structured logs for the API entry point"
-    
+
     # Emit a log message
     test_logger.info(test_message)
 

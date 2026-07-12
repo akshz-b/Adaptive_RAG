@@ -58,5 +58,19 @@ class Settings(BaseSettings):
         """Return Chroma persist directory as a Path object."""
         return Path(self.chroma_persist_dir)
 
+    api_cors_origins: str = Field(
+        default="http://localhost:3000,http://localhost:5173",
+        alias="API_CORS_ORIGINS",
+    )
+
+    @property
+    def api_cors_origins_list(self) -> list[str]:
+        """Return CORS origins as a list."""
+        return [
+            origin.strip()
+            for origin in self.api_cors_origins.split(",")
+            if origin.strip()
+        ]
+
 
 settings = Settings()

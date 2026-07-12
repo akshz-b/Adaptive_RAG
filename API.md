@@ -16,6 +16,41 @@ Once running, the interactive Swagger documentation is available at:
 
 ---
 
+## Production API Notes
+
+### Request Logging
+
+The API includes request logging middleware that records the HTTP method, request path, response status code, and request duration.
+
+### Error Handling
+
+Unexpected API errors are returned using a standardized error response format.
+
+Example:
+
+```json
+{
+  "detail": "Internal server error.",
+  "error_code": "internal_server_error"
+}
+```
+
+### CORS Configuration
+
+CORS origins are configurable via the `API_CORS_ORIGINS` environment variable.
+
+Example:
+
+```env
+API_CORS_ORIGINS=http://localhost:3000,http://localhost:5173
+```
+
+### Security and Rate Limiting
+
+For production deployments, add security headers and rate limiting at the API gateway, reverse proxy, or middleware layer to protect expensive endpoints such as `/api/v1/query` and `/api/v1/ingest`.
+
+---
+
 ## Endpoints
 
 ### 1. Health Check
@@ -83,7 +118,7 @@ Uploads and processes a PDF document, chunking it, storing the embeddings in the
 * **Method**: `POST`
 * **Headers**: `Content-Type: multipart/form-data`
 * **Request Body**:
-  * `file`: (binary, required) The PDF file to ingest.
+  * `file` (binary, required): The PDF file to ingest.
 * **Response**: `200 OK`
   ```json
   {

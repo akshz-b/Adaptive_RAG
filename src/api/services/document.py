@@ -14,14 +14,11 @@ _SAFE_DOCUMENT_ID_RE = re.compile(r"^[A-Za-z0-9._-]+$")
 
 
 def _validate_document_id(document_id: str) -> str:
-    # Use os.path.basename which is recognized by CodeQL as a path sanitizer
-    safe_id = os.path.basename(document_id)
-
-    if not safe_id or safe_id in {".", ".."}:
+    if not document_id or document_id in {".", ".."}:
         raise ValueError("Invalid document ID.")
-    if not _SAFE_DOCUMENT_ID_RE.fullmatch(safe_id):
+    if not _SAFE_DOCUMENT_ID_RE.fullmatch(document_id):
         raise ValueError("Invalid document ID.")
-    return safe_id
+    return document_id
 
 
 def list_ingested_documents() -> list:
@@ -63,7 +60,11 @@ def delete_ingested_document(document_id: str) -> dict:
     """
     Delete an ingested document and its chunks.
     """
-    safe_document_id = _validate_document_id(document_id)
+    # Sanitize using os.path.basename which is recognized by CodeQL as a path sanitizer
+    safe_document_id = os.path.basename(document_id)
+
+    # Run the validator on the sanitized ID
+    _validate_document_id(safe_document_id)
 
     # Validate and resolve path to prevent path traversal vulnerability (CWE-22)
     resolved_dir = DOCUMENTS_DIR.resolve()

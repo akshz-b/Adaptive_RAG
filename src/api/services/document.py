@@ -48,6 +48,10 @@ def delete_ingested_document(document_id: str) -> dict:
     """
     Delete an ingested document and its chunks.
     """
+    # Block directory traversal characters explicitly for CodeQL static analysis sanitization
+    if ".." in document_id or "/" in document_id or "\\" in document_id:
+        raise ValueError("Invalid document ID.")
+
     # Validate and resolve path to prevent path traversal vulnerability (CWE-22)
     resolved_dir = DOCUMENTS_DIR.resolve()
     document_path = (DOCUMENTS_DIR / document_id).resolve()

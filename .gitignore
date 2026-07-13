@@ -30,6 +30,9 @@ Thumbs.db
 # Chroma / local vector DB
 data/chroma/
 
+# Documents
+data/documents
+
 # Logs
 logs/
 *.log

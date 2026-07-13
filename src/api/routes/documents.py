@@ -72,6 +72,8 @@ def delete_document(document_id: str) -> DeleteResponse:
         return DeleteResponse(**result)
     except FileNotFoundError as exc:
         raise HTTPException(status_code=404, detail="Document not found.") from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:
         logger.exception("Failed to delete document")
         raise HTTPException(

@@ -48,6 +48,13 @@ def delete_ingested_document(document_id: str) -> dict:
     """
     Delete an ingested document and its chunks.
     """
+    # Validate and resolve path to prevent path traversal vulnerability (CWE-22)
+    resolved_dir = DOCUMENTS_DIR.resolve()
+    document_path = (DOCUMENTS_DIR / document_id).resolve()
+
+    if not document_path.is_relative_to(resolved_dir) or document_path == resolved_dir:
+        raise ValueError("Invalid document ID.")
+
     # 1. Find Chroma chunk IDs where the metadata["source"] == document_id
 
     vectorstore = get_vectorstore()
@@ -63,8 +70,6 @@ def delete_ingested_document(document_id: str) -> dict:
         raise FileNotFoundError(f"Document not found: {document_id}")
 
     vectorstore.delete(ids=chunk_ids)
-
-    document_path = DOCUMENTS_DIR / document_id
 
     if document_path.exists():
         document_path.unlink()

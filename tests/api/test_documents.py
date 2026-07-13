@@ -130,3 +130,22 @@ def test_delete_document_service_failure() -> None:
     assert response.json() == {
         "detail": "Failed to delete document.",
     }
+
+
+def test_delete_document_invalid_id() -> None:
+    """
+    Test that delete document endpoint returns a 400 when document_id is invalid (e.g. traversal attempt).
+    """
+    app = create_app()
+    client = TestClient(app)
+
+    with patch(
+        "src.api.routes.documents.delete_ingested_document",
+        side_effect=ValueError("Invalid document ID."),
+    ):
+        response = client.delete("/api/v1/documents/invalid_traversal_id")
+
+    assert response.status_code == 400
+    assert response.json() == {
+        "detail": "Invalid document ID.",
+    }

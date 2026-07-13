@@ -31,7 +31,8 @@ Thumbs.db
 data/chroma/
 
 # Documents
-data/documents
+data/documents/*
+!data/documents/.gitkeep
 
 # Logs
 logs/

@@ -4,15 +4,7 @@ This document describes the HTTP API for the AdaptiveRAG service. The API expose
 
 ## Running the Server
 
-Start the FastAPI application locally using `uvicorn`:
-
-```bash
-uvicorn src.api.app:create_app --factory --reload --port 8000
-```
-
-Once running, the interactive Swagger documentation is available at:
-- **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
-- **ReDoc**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+For instructions on running the FastAPI server and accessing the local Swagger UI or ReDoc interactive documentation, please refer to the **Run the REST API** section in [README.md](file:///Users/ab/Akshay/Adaptive-RAG/README.md).
 
 ---
 

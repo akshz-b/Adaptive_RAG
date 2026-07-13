@@ -324,6 +324,29 @@ adaptive-rag/
 │   ├── prompts.py
 │   ├── state.py
 │   ├── tools.py
+│   ├── api/
+│   │   ├── __init__.py
+│   │   ├── __main__.py
+│   │   ├── app.py
+│   │   ├── middleware/
+│   │   │   ├── __init__.py
+│   │   │   ├── error_handler.py
+│   │   │   └── request_logging.py
+│   │   ├── routes/
+│   │   │   ├── __init__.py
+│   │   │   ├── documents.py
+│   │   │   ├── health.py
+│   │   │   ├── ingest.py
+│   │   │   └── query.py
+│   │   ├── schemas/
+│   │   │   ├── __init__.py
+│   │   │   └── errors.py
+│   │   └── services/
+│   │       ├── __init__.py
+│   │       ├── document.py
+│   │       ├── ingest.py
+│   │       ├── query.py
+│   │       └── readiness.py
 │   ├── ingestion/
 │   │   ├── __init__.py
 │   │   ├── embedder.py
@@ -353,8 +376,16 @@ adaptive-rag/
 │   │   └── run_eval.py
 │   └── utils/
 │       ├── __init__.py
-│       └── documents.py
+│       ├── documents.py
+│       └── logging_config.py
 ├── tests/
+│   └── api/
+│       ├── __init__.py
+│       ├── test_documents.py
+│       ├── test_health.py
+│       ├── test_ingest.py
+│       ├── test_logging.py
+│       └── test_query.py
 ├── ingest.py
 ├── main.py
 ├── main_stage1.py
@@ -363,8 +394,8 @@ adaptive-rag/
 ├── main_stage5.py
 ├── pyproject.toml
 ├── .env.example
+├── API.md
 └── README.md
-
 ```
 
 ---
@@ -394,6 +425,9 @@ GOOGLE_EMBEDDING_MODEL=gemini-embedding-001
 
 RERANKER_MODEL=BAAI/bge-reranker-base
 
+# API Configuration
+API_CORS_ORIGINS=http://localhost:3000,http://localhost:5173
+API_ENABLE_STARTUP_WARMUP=false
 ```
 
 ---
@@ -473,31 +507,45 @@ This will:
 
 ## Run the Application
 
+### Console CLI Mode
+
 ```bash
 python main.py
-
 ```
 
 With debug output:
 
 ```bash
 python main.py --debug
-
 ```
 
 Example:
 
 ```text
 Question: What optimization techniques are proposed in the thesis?
-
 ```
 
 To exit:
 
 ```text
 exit
-
 ```
+
+---
+
+## Run the REST API
+
+Start the FastAPI application locally using `uvicorn`:
+
+```bash
+uvicorn src.api.app:create_app --factory --reload --port 8000
+```
+
+Once running, the interactive Swagger documentation is available at:
+* **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
+* **ReDoc**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+
+For a complete reference of the endpoints, HTTP request/response formats, parameters, and error schemas, please refer to [API.md](file:///Users/ab/Akshay/Adaptive-RAG/API.md).
 
 ## Run Evaluation
 
@@ -505,7 +553,6 @@ Run LangSmith evaluation:
 
 ```bash
 python -m src.evaluation.run_eval
-
 ```
 
 The evaluation pipeline uses:
@@ -514,6 +561,16 @@ The evaluation pipeline uses:
 * correctness evaluator
 * faithfulness evaluator
 * LangSmith experiment tracking
+
+---
+
+## Running Tests
+
+To run the unit and integration test suite:
+
+```bash
+pytest tests/api
+```
 
 ---
 
@@ -784,7 +841,6 @@ python -m compileall src
 
 Potential next improvements:
 
-* Add FastAPI service layer for REST API access.
 * Add Dockerfile and docker-compose setup.
 * Add streaming responses.
 * Add UI using Streamlit or React.
@@ -793,36 +849,4 @@ Potential next improvements:
 * Add batched chunk grading to reduce latency.
 * Add smarter retry query rewriting for Self-RAG.
 * Add role-based configuration for local, dev, and production environments.
-* Add unit tests and integration tests.
 * Add CI pipeline with Ruff and evaluation smoke tests.
-
----
-
-## Current Status
-
-AdaptiveRAG Agent currently supports:
-
-```text
-direct answering
-document-grounded retrieval
-hybrid search
-reranking
-query rewriting
-multi-query retrieval
-HyDE retrieval
-CRAG-style grading
-web fallback
-Self-RAG-style criticism
-safe finalization
-LangSmith tracing
-LangSmith evaluation
-production logging
-graceful fallbacks
-
-
-
-```
-
-```
-
-```

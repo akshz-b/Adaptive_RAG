@@ -130,7 +130,9 @@ def grader_node(state: RAGState) -> dict:
     reranked_chunks = state.get("reranked_chunks", [])
 
     if not query or not reranked_chunks:
-        logger.warning("Chunk grading skipped because query or reranked chunks are empty.")
+        logger.warning(
+            "Chunk grading skipped because query or reranked chunks are empty."
+        )
 
         return {
             "chunk_grades": [],
@@ -139,7 +141,6 @@ def grader_node(state: RAGState) -> dict:
 
     chunk_grades: list[dict] = []
 
-    
     for chunk in reranked_chunks:
         chunk_text = chunk.get("page_content", "")
         grade = grade_chunk(query, chunk_text)
@@ -167,18 +168,18 @@ def decide_after_grading(state: RAGState) -> str:
     if not grades:
         logger.info("No chunk grades available. Defaulting to web search.")
         return "web_search"
-    
+
     if all(grade == "relevant" for grade in grades):
         logger.info("Grader route selected: generate")
         return "generate"
-    
+
     if any(grade == "ambiguous" for grade in grades):
         logger.info("Grader route selected: web_search")
         return "web_search"
-    
+
     if all(grade == "irrelevant" for grade in grades):
         logger.info("Grader route selected: web_search")
         return "web_search"
-    
+
     logger.info("Defaulting to web search after grading.")
     return "web_search"

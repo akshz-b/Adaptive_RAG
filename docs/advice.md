@@ -18,16 +18,16 @@ semantic.py -> retrieval function
 
 To delete and remove reranker model
 
-C:\Users\A8891\.cache\huggingface\hub\models--BAAI--bge-reranker-base
+%USERPROFILE%\.cache\huggingface\hub\models--BAAI--bge-reranker-base
 
 ```cmd
-rmdir /s /q C:\Users\A8891\.cache\huggingface\hub\models--BAAI--bge-reranker-base
+rmdir /s /q %USERPROFILE%\.cache\huggingface\hub\models--BAAI--bge-reranker-base
 ```
 
 Delete all Hugging Face cached models
 
-C:\Users\A8891\.cache\huggingface
+%USERPROFILE%\.cache\huggingface
 
 ```cmd
-rmdir /s /q C:\Users\A8891\.cache\huggingface
+rmdir /s /q %USERPROFILE%\.cache\huggingface
 ```

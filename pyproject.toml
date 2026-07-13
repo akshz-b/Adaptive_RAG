@@ -18,6 +18,11 @@ dependencies = [
     "pydantic-settings",
     "python-dotenv",
     "langchain-google-genai",
+    "fastapi",
+    "uvicorn[standard]",
+    "python-multipart",
+    "pytest",
+    "httpx",
 ]
 
 [build-system]

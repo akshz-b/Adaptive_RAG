@@ -49,7 +49,9 @@ def get_hf_llm() -> ChatHuggingFace:
     """
     Create and return the Hugging Face chat LLM client.
     """
-    logger.info("Creating Hugging Face LLM client with model: %s", settings.hf_llm_model)
+    logger.info(
+        "Creating Hugging Face LLM client with model: %s", settings.hf_llm_model
+    )
 
     llm = HuggingFaceEndpoint(
         repo_id=settings.hf_llm_model,

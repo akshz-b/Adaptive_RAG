@@ -17,6 +17,8 @@ def _validate_document_id(document_id: str) -> str:
         raise ValueError("Invalid document ID.")
     if not _SAFE_DOCUMENT_ID_RE.fullmatch(document_id):
         raise ValueError("Invalid document ID.")
+    if Path(document_id).name != document_id:
+        raise ValueError("Invalid document ID.")
     return document_id
 
 
@@ -63,7 +65,7 @@ def delete_ingested_document(document_id: str) -> dict:
 
     # Validate and resolve path to prevent path traversal vulnerability (CWE-22)
     resolved_dir = DOCUMENTS_DIR.resolve()
-    document_path = (resolved_dir / Path(safe_document_id)).resolve()
+    document_path = (resolved_dir / safe_document_id).resolve()
 
     if not document_path.is_relative_to(resolved_dir) or document_path == resolved_dir:
         raise ValueError("Invalid document ID.")

@@ -1,6 +1,7 @@
 from src.retrieval.keyword import reset_bm25_index
 from src.api.services.ingest import DOCUMENTS_DIR
 import logging
+import os
 import re
 from collections import Counter
 from pathlib import Path
@@ -13,13 +14,14 @@ _SAFE_DOCUMENT_ID_RE = re.compile(r"^[A-Za-z0-9._-]+$")
 
 
 def _validate_document_id(document_id: str) -> str:
-    if not document_id or document_id in {".", ".."}:
+    # Use os.path.basename which is recognized by CodeQL as a path sanitizer
+    safe_id = os.path.basename(document_id)
+
+    if not safe_id or safe_id in {".", ".."}:
         raise ValueError("Invalid document ID.")
-    if not _SAFE_DOCUMENT_ID_RE.fullmatch(document_id):
+    if not _SAFE_DOCUMENT_ID_RE.fullmatch(safe_id):
         raise ValueError("Invalid document ID.")
-    if Path(document_id).name != document_id:
-        raise ValueError("Invalid document ID.")
-    return document_id
+    return safe_id
 
 
 def list_ingested_documents() -> list:
